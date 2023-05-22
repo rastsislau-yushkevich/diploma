@@ -7,10 +7,26 @@ const Calculator = () => {
     const [phone, setPhone] = useState("");
     const [square, setSquare] = useState("");
     const [country, setCountry] = useState("");
+    const [result, setResult] = useState(0);
+    const [valid, setValid] = useState(true);
+    let totalSum = 0;
+    const handleCheckboxChange = (e) => {
+        if(e.target.checked) {
+            totalSum += Number(e.target.value);
+        } else {
+            totalSum -= Number(e.target.value);
+        }
+    }
     const handleSelectChange = (e) => {
         setBusinessType(e.target.value)
     }
     const handlePhoneChange = (e) => {
+        setValid(false);
+        let reg;
+        // const reg = new RegExp('^\\+375\\d{9}');
+        country == "беларусь" ? reg = new RegExp('^\\+375\\d{9}') : reg = new RegExp('^\\+7\\d{10}')
+        setValid(reg.test(e.target.value));
+        console.log(valid)
         setPhone(e.target.value)
     }
     const handleSquareChange = (e) => {
@@ -21,7 +37,39 @@ const Calculator = () => {
     }
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(phone, businessType, square, country);
+        setResult(0)
+        switch(businessType) {
+            case "кафе": {
+                totalSum += 20000;
+                break;
+            }
+            case "кофейня": {
+                totalSum += 10000;
+                break;
+            }
+            case "ресторан": {
+                totalSum += 50000;
+                break;
+            }
+            case "бар": {
+                totalSum += 35000;
+                break;
+            }
+            case "магазин": {
+                totalSum += 45000;
+                break;
+            }
+            case "пекарня": {
+                totalSum += 15000;
+                break;
+            }
+        }
+        totalSum += Number(square)*0.1;
+        if(country == "россия") {
+            totalSum = totalSum*100/3
+        }
+        setResult(totalSum)
+        console.log(totalSum)
     }
     return(
         <div className="calculator">
@@ -30,6 +78,7 @@ const Calculator = () => {
                 <FormControl fullWidth style={{marginBottom: "20px"}}>
                     <InputLabel id="demo-simple-select-label" sx={{'&.Mui-focused': {color: "black"}}}>Укажите тип бизнеса</InputLabel>
                     <Select
+                        required
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={businessType}
@@ -47,6 +96,7 @@ const Calculator = () => {
                 </FormControl>
 
                 <TextField
+                    required
                     id="outlined-number"
                     label="Укажите площадь производственных помещений"
                     type="number"
@@ -69,10 +119,21 @@ const Calculator = () => {
                     </RadioGroup>
                 </FormControl>
 
-                <TextField fullWidth id="outlined-basic" label="Ваш номер телефона" onChange={handlePhoneChange} style={{marginBottom: "20px"}}/>
+                <TextField required fullWidth id="outlined-basic" label="Ваш номер телефона" error={!valid} onChange={handlePhoneChange} style={{marginBottom: "20px"}}/>
 
-                <Button type="submit" variant="contained" style={{marginBottom: "20px"}}>Получить оценку</Button>
+                <h3>Вам понадобятся</h3>
+                <fieldset className="calculator-checkboxes">
+                    <input type="checkbox" name="products" id="holod" value={1000} onChange={handleCheckboxChange}/><label htmlFor="holod">Холодильники</label>
+                    <input type="checkbox" name="products" id="vitr" value={800} onChange={handleCheckboxChange}/><label htmlFor="vitr">Витрины</label>
+                    <input type="checkbox" name="products" id="plit" value={500} onChange={handleCheckboxChange}/><label htmlFor="plit">Плиты</label>
+                    <input type="checkbox" name="products" id="pech" value={1200} onChange={handleCheckboxChange}/><label htmlFor="pech">Печи</label>
+                    <input type="checkbox" name="products" id="kotel" value={1400} onChange={handleCheckboxChange}/><label htmlFor="kotel">Котлы</label>
+                    <input type="checkbox" name="products" id="coffee" value={600} onChange={handleCheckboxChange}/><label htmlFor="coffee">Кофемашины</label>
+                </fieldset>
+
+                <Button type="submit" variant="contained" style={{marginBottom: "20px", backgroundColor: "rgb(117, 38, 50)"}}>Получить оценку</Button>
             </form>
+            {result ? <TextField fullWidth id="outlined-disabled" label={`Приблизительная стоимость проекта составит ${result} ${country == "россия" ? "RUB" : "BYN"}`} disabled style={{marginBottom: "20px"}}/> : ""}
         </div>
     )
 }
