@@ -74,6 +74,7 @@ const Calculator = () => {
     return(
         <div className="calculator">
             <div className="calculator-logo" style={{marginBottom: "20px"}}><img src={require('../assets/images/logo.png')}/></div>
+            <h1>Калькулятор стоимости оборудования бизнеса</h1>
             <form className="calculator-form" style={{display: "flex", justifyContent: "center", flexDirection: "column"}} onSubmit={handleSubmit}>
                 <FormControl fullWidth style={{marginBottom: "20px"}}>
                     <InputLabel id="demo-simple-select-label" sx={{'&.Mui-focused': {color: "black"}}}>Укажите тип бизнеса</InputLabel>
